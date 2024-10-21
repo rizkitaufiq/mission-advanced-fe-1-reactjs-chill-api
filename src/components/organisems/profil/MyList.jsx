@@ -1,27 +1,32 @@
-// import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-import myList from "../../../store/profil/myList";
-
-// import myList from "../../../databases/profil/myList.json";
+import fetchMovies from "../../../services/profil/myListService";
 
 const MyList = () => {
-  const { movies, removeFromMyList } = myList();
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleRemoveFromMyList = (id) => {
-    const movie = movies.find((data) => data.id === id);
-    if (
-      movie &&
-      window.confirm("Yakin Menghapus Film Ini dari Daftar List Anda ?")
-    ) {
-      removeFromMyList(id);
+  useEffect(() => {
+    fetchMoviesData();
+  });
+
+  const fetchMoviesData = async () => {
+    try {
+      const data = await fetchMovies();
+      console.log("Fetched Movies:", data);
+      setMovies(data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching movies:", error);
+      setError(err.message);
+      setLoading(false);
     }
   };
 
-  //   const [movies, setMovies] = useState([]);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
-  //   useEffect(() => {
-  //     setMovies(myList);
-  //   }, []);
   return (
     <div>
       <section className="relative p-2 text-white overflow-hidden">
@@ -38,7 +43,7 @@ const MyList = () => {
                 </div>
 
                 <button
-                  onClick={() => handleRemoveFromMyList(movie.id)}
+                  // onClick={() => handleRemoveFromMyList(movie.id)}
                   className="z-10 cursor-pointer absolute bg-error hover:bg-gray w-[44.56px] md:w-[120px] h-[14px] md:h-[35px] rounded-[12px] md:rounded-[24px] top-16 md:top-32 left-7 md:left-10 flex justify-center items-center"
                 >
                   <p className="text-[5.74px] md:text-[14px]">- Daftar Saya</p>
