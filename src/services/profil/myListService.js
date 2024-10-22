@@ -6,7 +6,7 @@ export const fetchMovies = async () => {
     // console.log(response);
     return response.data;
   } catch (error) {
-    console.error("Error fetching movies:", error);
+    console.error("Gagal menampilkan film:", error);
     throw error;
   }
 };
@@ -16,6 +16,6 @@ export const deleteMovies = async (id, categoryId) => {
     await apiClient.delete(`category/${categoryId}/movies/${id}`);
     return { success: true };
   } catch (error) {
-    console.error("Error deleting movie:", error);
+    console.error("Gagal menghapus film:", error);
   }
 };
