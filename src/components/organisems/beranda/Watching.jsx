@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 // import axios from "axios";
 
 // import watchingMovies from "../../../store/beranda/watchingMovies";
-import fetchMovies from "../../../services/beranda/watchingService";
+import { fetchMovies } from "../../../services/beranda/watchingService";
 
 import Star from "../../../assets/images/beranda/icon/star.svg";
 import rightArrow from "../../../assets/images/beranda/icon/right-arrow.svg";

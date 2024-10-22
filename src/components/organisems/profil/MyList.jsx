@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
-import fetchMovies from "../../../services/profil/myListService";
+import {
+  fetchMovies,
+  deleteMovies,
+} from "../../../services/profil/myListService";
 
 const MyList = () => {
   const [movies, setMovies] = useState([]);
@@ -14,7 +17,7 @@ const MyList = () => {
   const fetchMoviesData = async () => {
     try {
       const data = await fetchMovies();
-      console.log("Fetched Movies:", data);
+      // console.log("Fetched Movies:", data);
       setMovies(data);
       setLoading(false);
     } catch (err) {
@@ -26,6 +29,13 @@ const MyList = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  const handleDeleteMovie = async (id, categoryId) => {
+    const result = await deleteMovies(id, categoryId);
+    if (result.success) {
+      setMovies((prev) => prev.filter((movie) => movie.id !== id));
+    }
+  };
 
   return (
     <div>
@@ -43,7 +53,7 @@ const MyList = () => {
                 </div>
 
                 <button
-                  // onClick={() => handleRemoveFromMyList(movie.id)}
+                  onClick={() => handleDeleteMovie(movie.id, movie.categoryId)}
                   className="z-10 cursor-pointer absolute bg-error hover:bg-gray w-[44.56px] md:w-[120px] h-[14px] md:h-[35px] rounded-[12px] md:rounded-[24px] top-16 md:top-32 left-7 md:left-10 flex justify-center items-center"
                 >
                   <p className="text-[5.74px] md:text-[14px]">- Daftar Saya</p>
