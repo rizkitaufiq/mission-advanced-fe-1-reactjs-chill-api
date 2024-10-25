@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 // import axios from "axios";
+// import { toast } from "react-toastify";
 
 // import watchingMovies from "../../../store/beranda/watchingMovies";
 import { fetchMovies } from "../../../services/beranda/watchingService";
+import { createMovie } from "../../../services/profil/myListService";
 
 import Star from "../../../assets/images/beranda/icon/star.svg";
 import rightArrow from "../../../assets/images/beranda/icon/right-arrow.svg";
@@ -20,8 +22,11 @@ function Watching() {
   const fetchMoviesData = async () => {
     try {
       const data = await fetchMovies();
-      console.log("Fetched Movies:", data);
-      setMovies(data);
+      // console.log("Fetched Movies:", data);
+      const watchingMovies = data.filter(
+        (movie) => movie.category === "watching"
+      );
+      setMovies(watchingMovies);
       setLoading(false);
     } catch (err) {
       console.error("Error fetching movies:", error);
@@ -32,6 +37,10 @@ function Watching() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  const handleAddToMyList = async (movie) => {
+    await createMovie(movie);
+  };
 
   return (
     <div>
@@ -44,18 +53,27 @@ function Watching() {
           <div className="relative flex gap-3 md:gap-8 mb-4 w-full overflow-scroll md:overflow-hidden">
             {movies.map((movie) => (
               <div key={movie.id} className="relative">
-                <h6 className="absolute bottom-3 left-4 text-[14px] md:text-[18px]">
+                <h6 className="absolute bottom-4 md:bottom-3 left-3 md:left-4 text-[10px] md:text-[18px]">
                   {movie.title}
                 </h6>
-                <div className="w-[309px] md:w-[302px]">
+                <div className="w-[180px] md:w-[302px]">
                   <img src={movie.poster} alt={`${movie.titles}`} />
                 </div>
                 <img
                   src={Star}
                   alt="image"
-                  className="absolute bottom-3 right-14"
+                  className="absolute bottom-4 md:bottom-3 right-8 md:right-11 w-[15px] md:w-[auto]"
                 />
-                <p className="absolute bottom-3 right-4">{movie.rating}</p>
+                <p className="absolute bottom-4 md:bottom-3 right-4 text-[10px] md:text-[18px]">
+                  {movie.rating}
+                </p>
+
+                <button
+                  onClick={() => handleAddToMyList(movie)}
+                  className="z-10 cursor-pointer absolute bg-info hover:bg-infoHover w-[44.56px] md:w-[120px] h-[16px] md:h-[35px] rounded-[12px] md:rounded-[24px] top-16 md:top-24 left-16 md:left-24 flex justify-center items-center"
+                >
+                  <p className="text-[5.74px] md:text-[14px]">+ Daftar Saya</p>
+                </button>
               </div>
             ))}
           </div>
