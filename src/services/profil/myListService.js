@@ -2,26 +2,6 @@ import { toast } from "react-toastify";
 
 import { apiClient } from "../apiClient";
 
-// export const moviesData = async () => {
-//   try {
-//     const response = await fetch("/movies");
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching movies:", error);
-//     return [];
-//   }
-// };
-
-// export const myListData = async () => {
-//   try {
-//     const response = await fetch("/myList");
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching mylist:", error);
-//     return [];
-//   }
-// };
-
 export const fetchMovies = async () => {
   try {
     // const movies = await moviesData();
@@ -70,10 +50,10 @@ export const createMovie = async (movie) => {
   }
 };
 
-export const deleteMovies = async (id, categoryId) => {
+export const deleteMovies = async (movie) => {
   try {
-    await apiClient.delete(`category/${categoryId}/movies/${id}`);
-    return { success: true };
+    await apiClient.delete(`/movies/${movie.movieId}/myList/${movie.id}`);
+    toast.success(`${movie.title} berhasil dihapus dari daftar anda!`);
   } catch (error) {
     console.error("Gagal menghapus film:", error);
   }

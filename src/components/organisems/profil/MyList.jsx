@@ -30,10 +30,13 @@ const MyList = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const handleDeleteMovie = async (id, categoryId) => {
-    const result = await deleteMovies(id, categoryId);
-    if (result.success) {
-      setMovies((prev) => prev.filter((movie) => movie.id !== id));
+  const handleDeleteMovie = async (movie) => {
+    const check = movies.find((data) => data.id === movie.id);
+    if (
+      check &&
+      window.confirm("Yakin Menghapus Film Ini dari Daftar List Anda ?")
+    ) {
+      await deleteMovies(movie);
     }
   };
 
@@ -48,13 +51,13 @@ const MyList = () => {
           <div className="relative flex flex-wrap gap-2 md:gap-5 mb-4 w-full max-h-[300px] lg:max-h-max overflow-y-scroll md:overflow-hidden">
             {movies.map((movie) => (
               <div key={movie.id} className="relative w-1/7">
-                <div className="w-[95px] lg:w-[200px] h-[145px] lg:h-[300px]">
+                <div className="w-[95px] lg:w-[300px] h-[145px] lg:h-[300px]">
                   <img src={movie.poster} alt="image" />
                 </div>
 
                 <button
-                  onClick={() => handleDeleteMovie(movie.id, movie.categoryId)}
-                  className="z-10 cursor-pointer absolute bg-error hover:bg-gray w-[44.56px] md:w-[120px] h-[14px] md:h-[35px] rounded-[12px] md:rounded-[24px] top-16 md:top-32 left-7 md:left-10 flex justify-center items-center"
+                  onClick={() => handleDeleteMovie(movie)}
+                  className="z-10 cursor-pointer absolute bg-error hover:bg-gray w-[44.56px] md:w-[120px] h-[14px] md:h-[35px] rounded-[12px] md:rounded-[24px] top-8 md:top-24 left-7 md:left-24 flex justify-center items-center"
                 >
                   <p className="text-[5.74px] md:text-[14px]">- Daftar Saya</p>
                 </button>

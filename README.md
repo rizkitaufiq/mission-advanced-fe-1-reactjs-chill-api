@@ -13,7 +13,7 @@
   - Update Profil
 
 - Beranda
-  - Create Function to My List Data
+  - Create Function to My List Data API
 
 - Profil
   - Delete function to My List Data
