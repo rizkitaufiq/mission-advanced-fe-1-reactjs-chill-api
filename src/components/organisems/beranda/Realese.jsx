@@ -1,34 +1,37 @@
-// import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-// import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-import newRelease from "../../../store/beranda/newRelease";
-import myList from "../../../store/profil/myList";
-// import newRelease from "../../../databases/beranda/newRelease.json";
-// import myList from "../../../databases/profil/myList.json";
+import { fetchMovies } from "../../../services/beranda/watchingService";
+import { createMovie } from "../../../services/profil/myListService";
 
 import rightArrow from "../../../assets/images/beranda/icon/right-arrow.svg";
 import leftArrow from "../../../assets/images/beranda/icon/left-arrow.svg";
 
 const Realese = () => {
-  const { movies } = newRelease();
-  const { addToMyList } = myList();
-  // const navigate = useNavigate();
-  // const [movies, setMovies] = useState([]);
-  // const [myList, setMyList] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   setMovies(newRelease);
-  // }, []);
+  useEffect(() => {
+    fetchMoviesData();
+  });
 
-  const handleAddToMyList = (id) => {
-    const movie = movies.find((movie) => movie.id === id);
-    if (movie) {
-      addToMyList(movie);
-      // navigate("/profil");
-    } else {
-      toast.error("Film Tidak Ditemukan!");
+  const fetchMoviesData = async () => {
+    try {
+      const data = await fetchMovies();
+      const watchingMovies = data.filter((movie) => movie.category === "rilis");
+      setMovies(watchingMovies);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
     }
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  const handleAddToMyList = async (movie) => {
+    await createMovie(movie);
   };
 
   return (
@@ -40,26 +43,18 @@ const Realese = () => {
           </h3>
 
           <div className="relative flex gap-5 md:gap-8 mb-4 w-full overflow-scroll md:overflow-hidden">
-            {movies.map((movie) => (
-              <div key={movie.id} className="relative">
-                <div className="w-[95px] md:w-[234px]">
+            {movies.map((movie, index) => (
+              <div key={index} className="relative">
+                <div className="w-[195px] md:w-[334px] rounded-md">
                   <img src={movie.poster} alt="image" />
                 </div>
 
                 <button
-                  onClick={() => handleAddToMyList(movie.id)}
-                  className="z-10 cursor-pointer absolute bg-info hover:bg-infoHover w-[44.56px] md:w-[120px] h-[14px] md:h-[35px] rounded-[12px] md:rounded-[24px] top-16 md:top-40 left-7 md:left-16 flex justify-center items-center"
+                  onClick={() => handleAddToMyList(movie)}
+                  className="z-10 cursor-pointer absolute bg-info hover:bg-infoHover w-[44.56px] md:w-[120px] h-[16px] md:h-[35px] rounded-[12px] md:rounded-[24px] top-16 md:top-28 left-20 md:left-28 flex justify-center items-center"
                 >
                   <p className="text-[5.74px] md:text-[14px]">+ Daftar Saya</p>
                 </button>
-
-                <div
-                  className={`${
-                    movie.status == "" ? "hidden" : ""
-                  } absolute bg-info w-[44.56px] md:w-[104px] h-[14px] md:h-[28px] rounded-[12px] md:rounded-[24px] top-2 md:top-4 left-2 md:left-4 flex justify-center items-center`}
-                >
-                  <p className="text-[5.74px] md:text-[14px]">{movie.status}</p>
-                </div>
 
                 <div
                   className={`${
@@ -74,7 +69,7 @@ const Realese = () => {
             ))}
           </div>
         </div>
-        <div className="absolute flex justify-between w-full top-[9rem] md:top-[18rem]">
+        <div className="absolute flex justify-between w-full top-[9rem] md:top-[14rem]">
           <div className="flex w-[44px] -ml-2">
             <img src={leftArrow} alt="image" />
           </div>
