@@ -35,8 +35,8 @@ function Watching() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (loading) return <p className="text-white">Loading...</p>;
+  if (error) return <p className="text-white">Error: {error}</p>;
 
   const handleAddToMyList = async (movie) => {
     await createMovie(movie);
